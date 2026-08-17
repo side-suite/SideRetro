@@ -76,10 +76,7 @@ from the previous signed public version before publishing the APK.
    `app-release.apk` without renaming it.
 3. Publish the matching SideRetro source and the immutable third-party source archive
    specified by `THIRD_PARTY_SOURCES.md` for every copyleft component.
-4. Confirm the `Notify App Pack` GitHub Action succeeds. It dispatches to
-   `side-suite/fdroid-repo` using the organisation secret `FDROID_DISPATCH_TOKEN`.
+4. Run the established release workflow manually in `side-suite/fdroid-repo` after the
+   GitHub Release is public.
 5. After the App Pack rebuilds, verify the signed index lists SideRetro and install it
    through the SP-01 Library. Confirm its next signed update is accepted.
-
-If the dispatch secret is absent or the workflow fails, the GitHub release is still
-valid; trigger the App Pack build manually after correcting access.
