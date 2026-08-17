@@ -1,0 +1,42 @@
+# Gradle / Android build output
+.gradle/
+build/
+app/.gradle/
+app/.kotlin/
+app/build/
+app/app/build/
+app/captures/
+app/local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+__pycache__/
+*.py[cod]
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keystores / secrets
+*.jks
+*.keystore
+!debug.keystore
+app/keystore.properties
+
+# Locally assembled GitHub Release payloads. Their checksums are recorded, but the
+# APK and corresponding-source tarball are attached to the release rather than Git.
+release-artifacts/
+
+# Local planning and agent state. These are not part of the public source release.
+SPEC.md
+research/
+spike/
+.codex/

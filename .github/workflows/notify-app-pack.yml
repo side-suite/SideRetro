@@ -1,0 +1,37 @@
+name: Notify App Pack
+
+# Rebuild the SideSuite App Pack whenever a public GitHub release is published, so
+# SP-01 users receive the update without waiting for the pack's scheduled rebuild.
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask the pack to rebuild
+        env:
+          # A fine-grained PAT with contents:write on side-suite/fdroid-repo,
+          # stored as an organisation secret. GITHUB_TOKEN cannot dispatch to
+          # a different repository.
+          TOKEN: ${{ secrets.FDROID_DISPATCH_TOKEN }}
+          SRC_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Organisation secret FDROID_DISPATCH_TOKEN is not set."
+            exit 1
+          fi
+
+          payload=$(jq -n --arg repo "$SRC_REPO" --arg tag "$TAG" \
+            '{event_type: "app-released", client_payload: {repo: $repo, tag: $tag}}')
+
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/side-suite/fdroid-repo/dispatches \
+            -d "$payload"
+
+          echo "Dispatched app-released for $SRC_REPO $TAG"

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1920 1920">
+  <!-- Generator: Adobe Illustrator 30.7.0, SVG Export Plug-In . SVG Version: 2.1.4 Build 114)  -->
+  <defs>
+    <style>
+      .st0, .st1 {
+        fill: none;
+        stroke: #fff;
+      }
+
+      .st0, .st1, .st2 {
+        stroke-miterlimit: 10;
+        stroke-width: 4px;
+      }
+
+      .st1, .st3 {
+        display: none;
+      }
+
+      .st2 {
+        fill: #63d2c3;
+        stroke: #63d2c3;
+      }
+
+      .st4 {
+        fill: #1a1c20;
+      }
+    </style>
+  </defs>
+  <g id="_x23_body">
+    <g class="st3">
+      <rect class="st4" x="106.6" y="103.7" width="1706.8" height="1712.6" rx="259.3" ry="259.3"/>
+    </g>
+    <circle class="st1" cx="960" cy="960" r="284.4"/>
+    <circle class="st0" cx="960" cy="960" r="734.2"/>
+  </g>
+  <g id="_x23_buttons">
+    <circle id="KEYCODE_x5F_BUTTON_x5F_DPAD_x5F_UP" class="st2" cx="960" cy="450.2" r="198.4"/>
+    <circle id="KEYCODE_x5F_MEDIA_x5F_PLAY_x5F_PAUSE" class="st2" cx="960" cy="960" r="284.3"/>
+    <circle id="KEYCODE_x5F_BUTTON_x5F_DPAD_x5F_DOWN" class="st2" cx="960" cy="1469.8" r="198.4"/>
+    <circle id="KEYCODE_x5F_BUTTON_x5F_MEDIA_x5F_NEXT" class="st2" cx="1469.8" cy="960" r="198.4"/>
+    <circle id="KEYCODE_x5F_BUTTON_x5F_MEDIA_x5F_PREVIOUS" class="st2" cx="450.2" cy="960" r="198.4"/>
+    <circle id="KEYCODE_x5F_BUTTON_x5F_DPAD_x5F_LEFT" class="st2" cx="306.7" cy="312" r="151.7"/>
+    <circle id="KEYCODE_x5F_BUTTON_x5F_TAB" class="st2" cx="306.7" cy="1608" r="151.7"/>
+    <circle id="KEYCODE_x5F_BUTTON_x5F_DPAD_x5F_RIGHT" class="st2" cx="1613.3" cy="312" r="151.7"/>
+    <circle id="KEYCODE_x5F_BUTTON_x5F_ENTER" class="st2" cx="1613.3" cy="1608" r="151.7"/>
+  </g>
+</svg>

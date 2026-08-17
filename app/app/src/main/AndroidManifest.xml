@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      SideRetro declares no permissions.
+
+      The Downloads watcher (SPEC.md §7.2) runs on a persisted folder grant the user makes once, in
+      the system file picker. READ_EXTERNAL_STORAGE was tried and does not work: scoped storage hides
+      non-media files another app created, and a ROM is not media — measured on the device, with the
+      permission held and MediaProvider freshly scanned, the app saw none of seven pushed ROMs.
+    -->
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:appCategory="game"
+        android:supportsRtl="true"
+        android:hardwareAccelerated="true"
+        android:theme="@style/Theme.SideRetro">
+
+        <activity
+            android:name=".ui.LibraryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboard|keyboardHidden|navigation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!--
+              SPEC.md §7.2's everyday path, after the OS closed off a Downloads watcher: opening a
+              finished download hands the file straight to SideRetro, which imports it and starts it.
+
+              Matched by filename pattern rather than MIME type on purpose. These files all arrive as
+              application/octet-stream, and claiming that type would put SideRetro in the "open with"
+              list for every unknown file on the phone.
+            -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.gb" />
+                <data android:pathPattern=".*\\.gbc" />
+                <data android:pathPattern=".*\\.gba" />
+                <data android:pathPattern=".*\\.nes" />
+                <data android:pathPattern=".*\\.fds" />
+                <data android:pathPattern=".*\\.unf" />
+                <data android:pathPattern=".*\\.unif" />
+                <data android:pathPattern=".*\\.md" />
+                <data android:pathPattern=".*\\.gen" />
+                <data android:pathPattern=".*\\.smd" />
+                <data android:pathPattern=".*\\.bin" />
+                <data android:pathPattern=".*\\.zip" />
+                <data android:pathPattern=".*\\.ZIP" />
+            </intent-filter>
+
+            <!-- Sharing a file to SideRetro from a file manager. -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/zip" />
+                <data android:mimeType="application/x-zip-compressed" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          orientation and screenSize are handled in-process: recreating the Activity on rotation
+          would tear down the GLRetroView and restart the core mid-game. keyboard|keyboardHidden
+          matter because the Keytile enumerates as a keyboard, and a hot-swap counts as a
+          configuration change — which is exactly the moment the app must NOT restart.
+        -->
+        <activity
+            android:name=".ui.GameActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation" />
+    </application>
+</manifest>

@@ -1,0 +1,11 @@
+# SideRetro bundled-core manifest
+#
+# Files are arm64-v8a native libraries included at the paths below. Hashes were
+# calculated from the checked-in bytes with `shasum -a 256` on 2026-08-17.
+#
+# Exact upstream commits recovered from embedded version strings are locked in
+# THIRD_PARTY_SOURCES.md. These hashes identify the binaries; they do not by themselves
+# establish the historical buildbot toolchain or prove a bit-for-bit reproducible build.
+ad8f5d2acc16f039900979c51e606f3e1af4b43d890e4681202f618b561e44a1  app/app/src/main/jniLibs/arm64-v8a/libclownmdemu_libretro_android.so
+3a383500cca96e793ca30f74c5737e8eb7e797691aa376a4d18fe146c982c66e  app/app/src/main/jniLibs/arm64-v8a/libfceumm_libretro_android.so
+abdcb33611b3cd6380fe75c010184a174c124a3a3c64c822064ed388ba6ec9a7  app/app/src/main/jniLibs/arm64-v8a/libmgba_libretro_android.so
