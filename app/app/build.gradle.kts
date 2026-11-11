@@ -81,7 +81,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.Swordfish90:LibretroDroid:0.14.0")
+    implementation(project(":libretrodroid"))
     implementation("androidx.activity:activity-ktx:1.9.3")
     // Pinned to 2.6.x on purpose: GLRetroView drives itself through the reflective
     // @OnLifecycleEvent observer, which later lifecycle versions stop honouring.

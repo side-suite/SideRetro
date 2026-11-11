@@ -29,6 +29,19 @@
 | Application ID | `fi.palonkorpi.sideretro` |
 | Supported release ABI | `arm64-v8a` |
 
+## Rendering library source
+
+The app builds its patched LibretroDroid 0.14.0 module from `app/vendor/libretrodroid`.
+After cloning, fetch its two pinned source dependencies before building:
+
+```bash
+git submodule update --init --recursive
+```
+
+NDK 27.2.12479018 and CMake 3.22.1 are pinned in the module build. Gradle can
+install them when the Android SDK licenses are accepted. See the module's
+`SIDERETRO-PATCH.md` for its source revision and local changes.
+
 ## Build and test
 
 Run these from `app/`:

@@ -11,8 +11,71 @@ class ScalingTest {
         assertLayout(GameSystem.GB, ScalingMode.SHARP, 480, 640, 480, 432)
         assertLayout(GameSystem.GBC, ScalingMode.SHARP, 480, 640, 480, 432)
         assertLayout(GameSystem.GBA, ScalingMode.SHARP, 480, 640, 480, 320)
-        assertLayout(GameSystem.NES, ScalingMode.SHARP, 480, 640, 480, 450)
-        assertLayout(GameSystem.GENESIS, ScalingMode.SHARP, 480, 640, 480, 336)
+        assertLayout(GameSystem.NES, ScalingMode.SHARP, 480, 640, 256, 240)
+        assertLayout(GameSystem.GENESIS, ScalingMode.SHARP, 480, 640, 320, 224)
+    }
+
+    @Test
+    fun `gb and gbc sharp use whole pixels in both orientations and odd sized windows`() {
+        for (system in listOf(GameSystem.GB, GameSystem.GBC)) {
+            assertLayout(system, ScalingMode.SHARP, 640, 480, 480, 432)
+            assertLayout(system, ScalingMode.SHARP, 479, 640, 320, 288)
+            assertLayout(system, ScalingMode.SHARP, 481, 641, 480, 432)
+            assertLayout(system, ScalingMode.SHARP, 160, 144, 160, 144)
+            val layout = Scaling.compute(system, ScalingMode.SHARP, 479, 640)
+            assertEquals(1f, layout.scaleX, 0f)
+            assertEquals(1f, layout.scaleY, 0f)
+            assertLayout(system, ScalingMode.SHARP, 80, 72, 80, 72)
+        }
+    }
+
+    @Test
+    fun `sharp keeps equal whole pixel blocks for every system across window sizes`() {
+        for (system in GameSystem.entries) {
+            for ((width, height) in listOf(480 to 640, 640 to 480, 479 to 639, 1080 to 1920)) {
+                val layout = Scaling.compute(system, ScalingMode.SHARP, width, height)
+                val factor = minOf(width / system.fbWidth, height / system.fbHeight)
+                assertLayout(layout, system.fbWidth * factor, system.fbHeight * factor,
+                    system.fbWidth * factor, system.fbHeight * factor)
+                assertEquals(1f, layout.scaleX, 0f)
+                assertEquals(1f, layout.scaleY, 0f)
+            }
+        }
+    }
+
+    @Test
+    fun `gba sharp stays at two times in landscape instead of stretching to 640 pixels`() {
+        assertLayout(GameSystem.GBA, ScalingMode.SHARP, 640, 480, 480, 320)
+        assertLayout(GameSystem.NES, ScalingMode.SHARP, 640, 480, 512, 480)
+        assertLayout(GameSystem.GENESIS, ScalingMode.SHARP, 640, 480, 640, 448)
+    }
+
+    @Test
+    fun `sharp follows actual frame sizes including Genesis narrow and interlaced modes`() {
+        for ((sourceWidth, sourceHeight) in listOf(256 to 224, 320 to 240, 320 to 448, 256 to 480)) {
+            val layout = Scaling.compute(GameSystem.GENESIS, ScalingMode.SHARP, 640, 480,
+                sourceWidth, sourceHeight)
+            val factor = minOf(640 / sourceWidth, 480 / sourceHeight)
+            assertLayout(layout, sourceWidth * factor, sourceHeight * factor,
+                sourceWidth * factor, sourceHeight * factor)
+            assertEquals(1f, layout.scaleX, 0f)
+            assertEquals(1f, layout.scaleY, 0f)
+        }
+        assertLayout(Scaling.compute(GameSystem.NES, ScalingMode.SHARP, 480, 640, 256, 224),
+            displayedWidth = 256, displayedHeight = 224)
+    }
+
+    @Test
+    fun `tiny windows fit instead of crop and missing frame dimensions use system defaults`() {
+        for (system in GameSystem.entries) {
+            val layout = Scaling.compute(system, ScalingMode.SHARP, 80, 60)
+            org.junit.Assert.assertTrue(layout.displayedWidth in 1..80)
+            org.junit.Assert.assertTrue(layout.displayedHeight in 1..60)
+            assertEquals(1f, layout.scaleX, 0f)
+            assertEquals(1f, layout.scaleY, 0f)
+            assertEquals(Scaling.compute(system, ScalingMode.SHARP, 480, 640),
+                Scaling.compute(system, ScalingMode.SHARP, 480, 640, 0, 0))
+        }
     }
 
     @Test

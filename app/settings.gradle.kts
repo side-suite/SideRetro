@@ -10,11 +10,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // LibretroDroid is published on JitPack only. Note the capitalised artifactId —
-        // the upstream README's lowercase `libretrodroid` coordinate does not resolve.
-        maven { setUrl("https://jitpack.io") }
     }
 }
 
 rootProject.name = "SideRetro"
 include(":app")
+
+include(":libretrodroid")
+project(":libretrodroid").projectDir = file("vendor/libretrodroid")

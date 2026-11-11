@@ -112,7 +112,7 @@ class LegendLayoutTest {
     @Test
     fun `compact and T9 portrait composition keeps full game and a readable inset legend`() {
         // Compact QWERTY and T9 use a lower-left identity and lower-right legend. Their selected
-        // game remains 480×450 on portrait Sharp NES. At unit density its dense layout uses the
+        // game is 256×240 on portrait Sharp NES. At unit density its dense layout uses the
         // normal 43% optical position, capped only enough to retain the readable lower map.
         val rootWidth = 480
         val rootHeight = 640
@@ -128,7 +128,8 @@ class LegendLayoutTest {
             legendGapDp = 6,
             visualTopFloorDp = 32,
         ).toInt()
-        val picture = LegendLayout.Rect(0, top, rootWidth, top + shownHeight)
+        val left = (rootWidth - normal.displayedWidth) / 2
+        val picture = LegendLayout.Rect(left, top, left + normal.displayedWidth, top + shownHeight)
         val placement = LegendLayout.place(
             rootWidth = rootWidth,
             rootHeight = rootHeight,
@@ -142,9 +143,9 @@ class LegendLayoutTest {
 
         assertNotNull(placement)
         placement ?: return
-        assertTrue("the game width must remain normal", normal.displayedWidth == rootWidth)
-        assertTrue("the game height must remain normal", shownHeight == 450)
-        assertTrue("the game is below the visual bezel zone while retaining a full lower map", top == 76)
+        assertTrue("the game width must remain normal", normal.displayedWidth == 256)
+        assertTrue("the game height must remain normal", shownHeight == 240)
+        assertTrue("the game is below the visual bezel zone while retaining a full lower map", top == 172)
         assertTrue("dense key labels must retain their readable floor", placement.scale >= 96f / 124f)
         assertTrue("the corner needs a deliberate rather than hairline margin", placement.left + placement.width <= 468)
         assertDoesNotOverlap(rootWidth, rootHeight, picture, placement)
