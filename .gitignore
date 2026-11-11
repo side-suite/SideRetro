@@ -40,3 +40,6 @@ SPEC.md
 research/
 spike/
 .codex/
+
+# Local native renderer build files
+.cxx/

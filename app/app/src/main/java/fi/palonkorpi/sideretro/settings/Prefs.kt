@@ -32,7 +32,7 @@ enum class Orientation(val label: String) {
 
 /** SPEC.md §4.3. Naming follows the spec; see `Scaling` for the arithmetic. */
 enum class ScalingMode(val label: String, val blurb: String) {
-    SHARP("Sharp", "The pixels as the console drew them"),
+    SHARP("Sharp", "Whole pixels at the largest size that fits"),
     LARGE("Large", "The picture as the TV showed it"),
     FILL("Fill", "Stretched to the whole screen"),
 }

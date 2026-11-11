@@ -6,7 +6,10 @@ revision. `CORE_SHA256SUMS` is the binary identity; this file is the matching so
 
 The APK also embeds LibretroDroid 0.14.0. Its release tag resolves to
 [`8835c3098514390a271e36983957f7bb5f40abf1`](https://github.com/Swordfish90/LibretroDroid/commit/8835c3098514390a271e36983957f7bb5f40abf1),
-and its complete GPL-3.0-or-later source is included in SideRetro's corresponding-source archive.
+and the patched module source is in `app/vendor/libretrodroid`. Its `SIDERETRO-PATCH.md`
+records the changes and pinned Oboe/libretro-common revisions. Clone with submodules
+or run `git submodule update --init --recursive` before building. The matching core
+source archive is still required for APK releases as described below.
 
 | Core | Embedded identity | Exact upstream revision | ELF build ID |
 |---|---|---|---|

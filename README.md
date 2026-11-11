@@ -130,10 +130,12 @@ in-game save data. The original download remains untouched.
 
 ## Display and saves
 
-The default **Sharp** scale preserves the console's pixels. **Large** uses more of the panel while
+The default **Sharp** scale uses the largest whole-number pixel size that fits the screen.
+This can leave more empty space, especially for NES and Genesis in portrait. **Large** uses more of the panel while
 keeping the picture's aspect ratio, and **Fill** stretches it to the whole screen. The filter setting
 is deliberately just **Off** or **CRT**—the other bundled shader experiments did not survive testing
-at the SP-01's portrait scale.
+at the SP-01's portrait scale. **Off** uses nearest-neighbor sampling, so neighboring pixels
+are not blended. When the screen is smaller than the source picture, Sharp falls back to aspect fit.
 
 Frame choices are **Off**, **Console**, and **Lit**. Lit is the default. Save states, battery-backed
 save RAM, and automatic resume are stored privately on the phone alongside the imported copy of the

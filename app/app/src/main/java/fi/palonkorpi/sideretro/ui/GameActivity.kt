@@ -62,6 +62,7 @@ class GameActivity : ComponentActivity() {
     private lateinit var router: InputRouter
 
     private var retroView: GLRetroView? = null
+    private var lastFrameSize: GLRetroView.FrameSize? = null
     private lateinit var gameArea: FrameLayout
     private lateinit var legendView: LegendView
     private lateinit var faceplateView: FaceplateView
@@ -193,7 +194,10 @@ class GameActivity : ComponentActivity() {
         val view = retroView ?: return
         // The game retains the selected scaling dimensions. A dense tile earns extra room by
         // moving that unchanged picture upward in portrait, never by silently shrinking it.
-        val layout = Scaling.compute(system, prefs.scaling, gameArea.width, gameArea.height)
+        view.squarePixels = prefs.scaling == ScalingMode.SHARP
+        val frame = view.frameSize
+        val layout = Scaling.compute(system, prefs.scaling, gameArea.width, gameArea.height,
+            frame?.width ?: system.fbWidth, frame?.height ?: system.fbHeight)
         if (layout.viewWidth <= 0 || layout.viewHeight <= 0) return
 
         // The picture's *displayed* size: the view's box after the aspect-correction transform,
@@ -485,6 +489,7 @@ class GameActivity : ComponentActivity() {
             systemDirectory = filesDir.absolutePath
             savesDirectory = filesDir.absolutePath
             viewportAlignment = ViewportAlignment.CENTER
+            squarePixels = prefs.scaling == ScalingMode.SHARP
             shader = shaderFor(prefs.screenFilter)
             preferLowLatencyAudio = true
             // Off deliberately: it suppresses presentation of unchanged frames, which makes any
@@ -510,7 +515,14 @@ class GameActivity : ComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 view.getGLRetroEvents().collect { event ->
-                    if (event is GLRetroView.GLRetroEvents.FrameRendered) restoreResumePoint()
+                    if (event is GLRetroView.GLRetroEvents.FrameRendered) {
+                        val frame = view.frameSize
+                        if (frame != null && frame != lastFrameSize) {
+                            lastFrameSize = frame
+                            if (prefs.scaling == ScalingMode.SHARP) applyScaling()
+                        }
+                        restoreResumePoint()
+                    }
                 }
             }
         }
@@ -748,6 +760,7 @@ class GameActivity : ComponentActivity() {
     }
 
     private fun shaderFor(filter: ScreenFilter): ShaderConfig = when (filter) {
+        // The bundled renderer maps Default to GL_NEAREST; upstream 0.14.0 uses GL_LINEAR.
         ScreenFilter.OFF -> ShaderConfig.Default
         ScreenFilter.CRT -> ShaderConfig.CRT
     }

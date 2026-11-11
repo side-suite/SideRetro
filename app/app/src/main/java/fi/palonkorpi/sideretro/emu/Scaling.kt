@@ -8,22 +8,22 @@ import kotlin.math.roundToInt
  *
  * ### Why this is arithmetic and not configuration
  *
- * LibretroDroid's renderer (`videolayout.cpp`) always preserves the aspect ratio the *core* reports
+ * LibretroDroid's renderer (`videolayout.cpp`) normally preserves the aspect ratio the *core* reports
  * and letterboxes it inside whatever box the view occupies. There is no API to stretch it: the
  * exposed `viewport` rectangle scales the box but cannot change its shape, and `setViewportAlignment`
  * only chooses where the letterbox space goes. So the scaling mode is implemented by **sizing the
  * `GLRetroView` itself**, not by configuring it.
  *
- * All three cores report their framebuffer shape, i.e. square pixels. That makes Sharp free — the
- * box already has the right shape, so nothing is letterboxed and nothing is resampled. The other two
+ * In Sharp, the patched renderer uses the actual frame shape with square pixels. Sharp uses whole
+ * framebuffer multiples so every source pixel occupies an equal square block. The other two
  * modes need a shape the renderer will not produce, so they are reached with a view transform on top:
  * we lay the view out at the shape the renderer *will* fill, then scale it to the target rectangle.
  * For NES and Genesis in Large that transform is a 1.25× horizontal stretch, which is precisely what
  * a 4:3 correction of a 256- or 320-wide framebuffer is.
  *
- * ### The numbers this must reproduce (from §4.3, on a 480×640 panel)
+ * ### Sizes on a 480×640 panel (Sharp now uses whole framebuffer multiples)
  *
- * Portrait, Sharp:  GB 480×432 · NES 480×450 · Genesis 480×336 · GBA 480×320
+ * Portrait, Sharp:  GB 480×432 · NES 256×240 · Genesis 320×224 · GBA 480×320
  * Landscape, Large: NES 640×480 · Genesis 640×480 · GBA 640×427 · GB 533×480
  *
  * NES and Genesis fill the rotated panel exactly, with no crop and no distortion, because the panel
@@ -49,8 +49,23 @@ object Scaling {
         val displayedHeight: Int get() = (viewHeight * scaleY).roundToInt()
     }
 
-    fun compute(system: GameSystem, mode: ScalingMode, availWidth: Int, availHeight: Int): Layout {
+    fun compute(
+        system: GameSystem, mode: ScalingMode, availWidth: Int, availHeight: Int,
+        frameWidth: Int = system.fbWidth, frameHeight: Int = system.fbHeight,
+    ): Layout {
         if (availWidth <= 0 || availHeight <= 0) return Layout(availWidth, availHeight, 1f, 1f)
+
+        val sourceW = frameWidth.takeIf { it > 0 } ?: system.fbWidth
+        val sourceH = frameHeight.takeIf { it > 0 } ?: system.fbHeight
+        val sharpAspect = sourceW.toFloat() / sourceH
+        // Sharp: render straight into an integer-sized surface with no View transform.
+        // If even 1x will not fit, fall back to aspect fit rather than crop the game.
+        if (mode == ScalingMode.SHARP) {
+            val factor = minOf(availWidth / sourceW, availHeight / sourceH)
+            if (factor >= 1) return Layout(sourceW * factor, sourceH * factor, 1f, 1f)
+            val (w, h) = fit(sharpAspect, availWidth, availHeight)
+            return Layout(w, h, 1f, 1f)
+        }
 
         // The rectangle we want on the glass.
         val (targetW, targetH) = when (mode) {

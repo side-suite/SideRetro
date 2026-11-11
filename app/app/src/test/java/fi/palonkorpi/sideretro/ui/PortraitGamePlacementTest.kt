@@ -18,8 +18,8 @@ class PortraitGamePlacementTest {
             Case(GameSystem.GB, ScalingMode.SHARP, 62.65f),
             Case(GameSystem.GBC, ScalingMode.SHARP, 62.65f),
             Case(GameSystem.GBA, ScalingMode.SHARP, 137.60f),
-            Case(GameSystem.NES, ScalingMode.SHARP, 44.65f),
-            Case(GameSystem.GENESIS, ScalingMode.SHARP, 130.72f),
+            Case(GameSystem.NES, ScalingMode.SHARP, 172f),
+            Case(GameSystem.GENESIS, ScalingMode.SHARP, 178.88f),
             Case(GameSystem.GB, ScalingMode.LARGE, 62.65f),
             Case(GameSystem.GBC, ScalingMode.LARGE, 62.65f),
             Case(GameSystem.GBA, ScalingMode.LARGE, 137.60f),
@@ -40,13 +40,13 @@ class PortraitGamePlacementTest {
 
     @Test
     fun `density conversion changes dense safe margins rather than assuming one pixel per dp`() {
-        val sharpNes = Scaling.compute(GameSystem.NES, ScalingMode.SHARP, ROOT_WIDTH, ROOT_HEIGHT)
+        val sharpGb = Scaling.compute(GameSystem.GB, ScalingMode.SHARP, ROOT_WIDTH, ROOT_HEIGHT)
 
-        val unitDensityTop = denseTop(sharpNes.displayedHeight.toFloat(), 1f)
-        val sp01Top = denseTop(sharpNes.displayedHeight.toFloat(), SP01_DENSITY)
+        val unitDensityTop = denseTop(sharpGb.displayedHeight.toFloat(), 1f)
+        val sp01Top = denseTop(sharpGb.displayedHeight.toFloat(), SP01_DENSITY)
 
-        assertEquals(76f, unitDensityTop, 0.01f)
-        assertEquals(44.65f, sp01Top, 0.01f)
+        assertEquals(89.44f, unitDensityTop, 0.01f)
+        assertEquals(62.65f, sp01Top, 0.01f)
         assertTrue("the real device's 32dp floor is about 41px", VISUAL_FLOOR_SP01 in 40f..42f)
     }
 
